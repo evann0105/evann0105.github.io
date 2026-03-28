@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeadCity RP — Dossier Classifié</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Caveat:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper:    #e8dfc8;
+    --paper2:   #ddd3b5;
+    --paper3:   #cfc3a0;
+    --ink:      #1a1208;
+    --ink2:     #2e2010;
+    --ink-faded:#5a4a30;
+    --red-stamp:#8b1a1a;
+    --red-ink:  #6b1010;
+    --blood:    #4a0e0e;
+    --rust:     #7a3e1a;
+    --stain:    rgba(90,60,20,0.18);
+    --tape:     rgba(210,190,140,0.55);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: #1a1410;
+    background-image:
+      radial-gradient(ellipse at 20% 50%, #2a1f14 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, #231810 0%, transparent 50%);
+    min-height: 100vh;
+    font-family: 'IM Fell English', Georgia, serif;
+    color: var(--ink);
+    padding: 40px 20px 80px;
+    overflow-x: hidden;
+  }
+
+  /* === GRAIN OVERLAY === */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35;
+  }
+
+  /* === JOURNAL COVER === */
+  .cover {
+    max-width: 820px;
+    margin: 0 auto 0;
+    position: relative;
+    background: #1f1409;
+    border: 3px solid #3a2810;
+    border-radius: 4px 12px 12px 4px;
+    padding: 60px 50px 50px;
+    box-shadow:
+      -8px 0 0 #0d0a06,
+      8px 8px 40px rgba(0,0,0,0.8),
+      inset 4px 0 12px rgba(0,0,0,0.5),
+      inset -2px 0 6px rgba(255,200,100,0.03);
+    overflow: hidden;
+  }
+
+  /* Spine line */
+  .cover::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 8px;
+    background: linear-gradient(to right, #0d0a06, #1a1108 60%, #221508);
+    border-right: 1px solid #3a2810;
+  }
+
+  /* Worn leather texture */
+  .cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 3px,
+        rgba(255,200,80,0.012) 3px,
+        rgba(255,200,80,0.012) 4px
+      );
+    pointer-events: none;
+  }
+
+  .cover-title {
+    font-family: 'Special Elite', monospace;
+    font-size: clamp(14px, 3vw, 20px);
+    color: #a08040;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    text-align: center;
+    opacity: 0.7;
+    margin-bottom: 28px;
+  }
+
+  .cover-main {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(52px, 12vw, 96px);
+    font-weight: 700;
+    color: #c89a40;
+    text-align: center;
+    line-height: 0.9;
+    text-shadow: 2px 3px 0 #0d0a06, 0 0 40px rgba(200,150,50,0.15);
+    margin-bottom: 10px;
+    transform: rotate(-1.5deg);
+    display: block;
+  }
+
+  .cover-sub {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(28px, 6vw, 48px);
+    font-weight: 600;
+    color: #8b1a1a;
+    text-align: center;
+    letter-spacing: 0.05em;
+    transform: rotate(-1.5deg);
+    display: block;
+    margin-bottom: 32px;
+  }
+
+  .cover-divider {
+    border: none;
+    border-top: 1px solid #4a3820;
+    margin: 20px auto;
+    width: 60%;
+  }
+
+  .cover-stamp {
+    font-family: 'Special Elite', monospace;
+    font-size: 11px;
+    color: #8b1a1a;
+    text-align: center;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    transform: rotate(2deg);
+    display: block;
+    border: 2px solid #8b1a1a;
+    padding: 6px 16px;
+    display: inline-block;
+    margin: 0 auto;
+  }
+
+  .cover-stamp-wrap {
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  /* === NOTEBOOK PAGES CONTAINER === */
+  .notebook {
+    max-width: 820px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* === PAGE === */
+  .page {
+    position: relative;
+    background: var(--paper);
+    margin-bottom: 60px;
+    border-radius: 1px 8px 6px 2px;
+    padding: 60px 60px 70px 80px;
+    box-shadow:
+      4px 6px 30px rgba(0,0,0,0.7),
+      inset 0 0 60px rgba(160,120,60,0.08);
+    overflow: visible;
+  }
+
+  /* Ruled lines */
+  .page.ruled {
+    background-image:
+      linear-gradient(var(--paper) 0, var(--paper) 29px, rgba(100,80,50,0.18) 29px, rgba(100,80,50,0.18) 30px, var(--paper) 30px);
+    background-size: 100% 30px;
+  }
+
+  /* Left margin line */
+  .page::before {
+    content: '';
+    position: absolute;
+    left: 65px; top: 0; bottom: 0;
+    width: 1px;
+    background: rgba(180,80,80,0.3);
+  }
+
+  /* === TORN EDGES === */
+  .torn-top {
+    position: absolute;
+    top: -18px; left: -2px; right: -2px;
+    height: 22px;
+    background: var(--paper);
+    clip-path: polygon(
+      0% 100%, 1% 40%, 2.5% 70%, 4% 20%, 5.5% 55%, 7% 10%, 8.5% 60%, 10% 25%,
+      11.5% 70%, 13% 30%, 14.5% 65%, 16% 15%, 17.5% 50%, 19% 80%, 20.5% 35%,
+      22% 70%, 23.5% 20%, 25% 55%, 26.5% 85%, 28% 40%, 29.5% 65%, 31% 15%,
+      32.5% 50%, 34% 75%, 35.5% 25%, 37% 60%, 38.5% 10%, 40% 45%, 41.5% 70%,
+      43% 20%, 44.5% 55%, 46% 80%, 47.5% 30%, 49% 65%, 50.5% 15%, 52% 50%,
+      53.5% 75%, 55% 25%, 56.5% 60%, 58% 10%, 59.5% 45%, 61% 70%, 62.5% 20%,
+      64% 55%, 65.5% 80%, 67% 30%, 68.5% 65%, 70% 15%, 71.5% 50%, 73% 75%,
+      74.5% 25%, 76% 60%, 77.5% 10%, 79% 45%, 80.5% 70%, 82% 20%, 83.5% 55%,
+      85% 80%, 86.5% 35%, 88% 65%, 89.5% 15%, 91% 50%, 92.5% 75%, 94% 30%,
+      95.5% 55%, 97% 10%, 98.5% 45%, 100% 70%, 100% 100%
+    );
+  }
+
+  .torn-bottom {
+    position: absolute;
+    bottom: -18px; left: -2px; right: -2px;
+    height: 22px;
+    background: var(--paper);
+    clip-path: polygon(
+      0% 0%, 1% 60%, 2.5% 30%, 4% 80%, 5.5% 45%, 7% 90%, 8.5% 40%, 10% 75%,
+      11.5% 30%, 13% 70%, 14.5% 35%, 16% 85%, 17.5% 50%, 19% 20%, 20.5% 65%,
+      22% 30%, 23.5% 80%, 25% 45%, 26.5% 15%, 28% 60%, 29.5% 35%, 31% 85%,
+      32.5% 50%, 34% 25%, 35.5% 75%, 37% 40%, 38.5% 90%, 40% 55%, 41.5% 30%,
+      43% 80%, 44.5% 45%, 46% 20%, 47.5% 70%, 49% 35%, 50.5% 85%, 52% 50%,
+      53.5% 25%, 55% 75%, 56.5% 40%, 58% 90%, 59.5% 55%, 61% 30%, 62.5% 80%,
+      64% 45%, 65.5% 20%, 67% 70%, 68.5% 35%, 70% 85%, 71.5% 50%, 73% 25%,
+      74.5% 75%, 76% 40%, 77.5% 90%, 79% 55%, 80.5% 30%, 82% 80%, 83.5% 45%,
+      85% 20%, 86.5% 65%, 88% 35%, 89.5% 85%, 91% 50%, 92.5% 25%, 94% 70%,
+      95.5% 45%, 97% 90%, 98.5% 55%, 100% 30%, 100% 0%
+    );
+  }
+
+  /* === STAINS === */
+  .stain {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .stain-coffee {
+    background: radial-gradient(ellipse, rgba(90,55,20,0.22) 30%, rgba(90,55,20,0.08) 60%, transparent 80%);
+    width: 120px; height: 100px;
+  }
+
+  .stain-blood {
+    background: radial-gradient(ellipse, rgba(80,15,15,0.3) 20%, rgba(80,15,15,0.12) 55%, transparent 75%);
+    width: 60px; height: 45px;
+    transform: rotate(-15deg);
+  }
+
+  .stain-water {
+    background: radial-gradient(ellipse, transparent 40%, rgba(100,75,30,0.12) 60%, transparent 75%);
+    width: 200px; height: 160px;
+    border: 1px solid rgba(100,75,30,0.08);
+    border-radius: 50%;
+  }
+
+  /* === TAPE PIECES === */
+  .tape {
+    position: absolute;
+    background: var(--tape);
+    transform-origin: center;
+    z-index: 10;
+  }
+
+  .tape-h { height: 22px; border-radius: 1px; }
+  .tape-v { width: 22px; border-radius: 1px; }
+
+  /* === PAGE HEADER === */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    border-bottom: 1px solid rgba(90,60,20,0.25);
+    padding-bottom: 14px;
+  }
+
+  .page-num {
+    font-family: 'Special Elite', monospace;
+    font-size: 11px;
+    color: var(--ink-faded);
+    opacity: 0.6;
+    letter-spacing: 0.1em;
+  }
+
+  .page-date {
+    font-family: 'Caveat', cursive;
+    font-size: 15px;
+    color: var(--ink-faded);
+    transform: rotate(1deg);
+    display: inline-block;
+  }
+
+  /* === CONTENT STYLES === */
+  .chapter-title {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.1;
+    margin-bottom: 6px;
+    transform: rotate(-0.8deg);
+    display: inline-block;
+  }
+
+  .chapter-subtitle {
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red-stamp);
+    margin-bottom: 28px;
+    opacity: 0.8;
+  }
+
+  .prose-text {
+    font-size: 16px;
+    line-height: 1.9;
+    color: var(--ink2);
+    margin-bottom: 20px;
+  }
+
+  .prose-text strong {
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: rgba(90,60,20,0.3);
+    text-underline-offset: 3px;
+  }
+
+  /* === HANDWRITTEN NOTES === */
+  .handnote {
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    color: var(--red-ink);
+    transform: rotate(-2.5deg);
+    display: inline-block;
+    margin: 16px 0;
+    line-height: 1.5;
+    position: relative;
+  }
+
+  .handnote::before {
+    content: '';
+    position: absolute;
+    left: -8px; right: -8px;
+    bottom: -2px;
+    height: 1px;
+    background: rgba(107,16,16,0.25);
+  }
+
+  .handnote-blue {
+    color: #1a2d5a;
+    transform: rotate(1.5deg);
+  }
+
+  /* === CLASSIFIED STAMP === */
+  .stamp {
+    display: inline-block;
+    font-family: 'Special Elite', monospace;
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--red-stamp);
+    border: 3px solid var(--red-stamp);
+    padding: 6px 16px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transform: rotate(-8deg);
+    opacity: 0.75;
+    margin: 12px 0;
+  }
+
+  .stamp-approved {
+    color: #1a5a2a;
+    border-color: #1a5a2a;
+    transform: rotate(5deg);
+  }
+
+  /* === EXCERPTS / QUOTES === */
+  .excerpt {
+    background: rgba(90,60,20,0.06);
+    border-left: 3px solid var(--rust);
+    padding: 16px 20px;
+    margin: 24px 0;
+    position: relative;
+  }
+
+  .excerpt::before {
+    content: '"';
+    font-family: 'IM Fell English', serif;
+    font-size: 80px;
+    color: var(--rust);
+    opacity: 0.15;
+    position: absolute;
+    top: -10px; left: 10px;
+    line-height: 1;
+  }
+
+  .excerpt-text {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--ink-faded);
+    padding-left: 20px;
+  }
+
+  .excerpt-source {
+    font-family: 'Special Elite', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-top: 10px;
+    padding-left: 20px;
+    display: block;
+  }
+
+  /* === DOSSIER NOTE (pinned paper) === */
+  .note {
+    background: #f0e6c0;
+    padding: 20px 24px;
+    margin: 28px 0;
+    position: relative;
+    box-shadow: 2px 3px 10px rgba(0,0,0,0.2), inset 0 0 20px rgba(150,110,50,0.06);
+    transform: rotate(0.8deg);
+    border-radius: 1px;
+  }
+
+  .note::before {
+    content: '';
+    position: absolute;
+    top: -8px; left: 50%; transform: translateX(-50%);
+    width: 30px; height: 16px;
+    background: rgba(210,190,140,0.7);
+    border-radius: 1px;
+  }
+
+  .note-title {
+    font-family: 'Caveat', cursive;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(90,60,20,0.2);
+    padding-bottom: 6px;
+  }
+
+  .note-body {
+    font-family: 'Caveat', cursive;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--ink2);
+  }
+
+  /* === TIMELINE === */
+  .timeline { margin: 24px 0; }
+
+  .tl-item {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 16px;
+    padding-bottom: 20px;
+    position: relative;
+  }
+
+  .tl-item::after {
+    content: '';
+    position: absolute;
+    left: 99px; top: 6px; bottom: 0;
+    width: 1px;
+    background: repeating-linear-gradient(to bottom, rgba(90,60,20,0.3) 0, rgba(90,60,20,0.3) 4px, transparent 4px, transparent 8px);
+  }
+
+  .tl-item:last-child::after { display: none; }
+
+  .tl-date {
+    font-family: 'Caveat', cursive;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--red-ink);
+    text-align: right;
+    padding-top: 2px;
+    line-height: 1.3;
+  }
+
+  .tl-dot {
+    position: absolute;
+    left: 95px; top: 5px;
+    width: 10px; height: 10px;
+    background: var(--red-ink);
+    border-radius: 50%;
+    border: 2px solid var(--paper);
+    z-index: 1;
+  }
+
+  .tl-content { padding-left: 14px; }
+
+  .tl-title {
+    font-family: 'Caveat', cursive;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .tl-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink-faded);
+  }
+
+  /* === ZONE TAGS === */
+  .zones-list { display: flex; flex-direction: column; gap: 14px; margin: 20px 0; }
+
+  .zone-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 12px 16px;
+    background: rgba(90,60,20,0.04);
+    border-left: 4px solid transparent;
+  }
+
+  .zone-row.green  { border-left-color: #2e7d32; }
+  .zone-row.orange { border-left-color: #bf5a00; }
+  .zone-row.red    { border-left-color: #8b1a1a; }
+  .zone-row.black  { border-left-color: #1a1208; }
+
+  .zone-badge {
+    font-family: 'Special Elite', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .zone-badge.green  { background: #e8f5e9; color: #1b5e20; border: 1px solid #2e7d32; }
+  .zone-badge.orange { background: #fff3e0; color: #7f3300; border: 1px solid #bf5a00; }
+  .zone-badge.red    { background: #fce8e8; color: #5c0a0a; border: 1px solid #8b1a1a; }
+  .zone-badge.black  { background: #2a2018; color: #c8a85a; border: 1px solid #4a3820; }
+
+  .zone-desc-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-faded);
+    flex: 1;
+  }
+
+  /* === SEPARATOR === */
+  .page-sep {
+    display: flex; align-items: center; gap: 12px;
+    margin: 30px 0;
+    color: rgba(90,60,20,0.3);
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+  }
+  .page-sep::before, .page-sep::after {
+    content: '';
+    flex: 1;
+    border-top: 1px dashed rgba(90,60,20,0.25);
+  }
+
+  /* === TABS (journal tabs) === */
+  .tabs {
+    display: flex;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: transparent;
+    margin-bottom: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 10px 0 0;
+  }
+
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    font-family: 'Caveat', cursive;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: none;
+    background: #2e2010;
+    color: #a08040;
+    cursor: pointer;
+    border-top: 2px solid #4a3820;
+    border-left: 1px solid #4a3820;
+    border-right: 1px solid #4a3820;
+    border-radius: 6px 6px 0 0;
+    transition: all 0.2s;
+    white-space: nowrap;
+    position: relative;
+    top: 2px;
+  }
+
+  .tab-btn:hover { background: #3a2a14; color: #c8a050; }
+
+  .tab-btn.active {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: rgba(90,60,20,0.3);
+    top: 0;
+    z-index: 2;
+  }
+
+  /* === SECTIONS === */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* === PAPER CLIP SVG === */
+  .paperclip {
+    position: absolute;
+    z-index: 20;
+  }
+
+  /* === FOOTER INFO === */
+  .footer-note {
+    text-align: center;
+    font-family: 'Special Elite', monospace;
+    font-size: 11px;
+    color: #5a4a30;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(90,60,20,0.15);
+  }
+
+  /* === SCROLLBAR === */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #1a1410; }
+  ::-webkit-scrollbar-thumb { background: #4a3820; border-radius: 3px; }
+
+  /* === PHOTO / IMAGE PLACEHOLDER === */
+  .photo-placeholder {
+    background: #c8b890;
+    border: 2px solid rgba(90,60,20,0.3);
+    padding: 30px 20px;
+    text-align: center;
+    font-family: 'Special Elite', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faded);
+    opacity: 0.6;
+    transform: rotate(-2deg);
+    display: inline-block;
+    margin: 10px 0;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 600px) {
+    body { padding: 20px 10px 60px; }
+    .page { padding: 40px 24px 50px 40px; }
+    .page::before { left: 32px; }
+    .cover { padding: 40px 24px 36px; }
+    .tab-btn { font-size: 14px; padding: 8px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover" id="top">
+  <div class="cover-title">Dossier de survie — Los Santos</div>
+  <span class="cover-main">DeadCity</span>
+  <span class="cover-sub">Roleplay</span>
+  <hr class="cover-divider">
+  <div class="cover-stamp-wrap">
+    <span class="stamp" style="font-size:14px; transform:rotate(-4deg); display:inline-block; margin-right:10px;">CLASSIFIÉ</span>
+    <span class="stamp stamp-approved" style="font-size:13px; display:inline-block;">ZETA-9</span>
+  </div>
+  <p style="font-family:'Special Elite',monospace; font-size:11px; color:#6a5030; text-align:center; margin-top:22px; letter-spacing:0.15em; text-transform:uppercase; opacity:0.6;">Los Santos · 2026 · Année Zéro</p>
+</div>
+
+<!-- TABS -->
+<div class="notebook">
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" onclick="showTab('origine')">① Origine</button>
+    <button class="tab-btn" onclick="showTab('propagation')">② Propagation</button>
+    <button class="tab-btn" onclick="showTab('virus')">③ Le Virus</button>
+    <button class="tab-btn" onclick="showTab('zeta9')">④ ZETA-9</button>
+    <button class="tab-btn" onclick="showTab('zones')">⑤ Les Zones</button>
+    <button class="tab-btn" onclick="showTab('survie')">⑥ Survie</button>
+    <button class="tab-btn" onclick="showTab('rejoindre')">⑦ Rejoindre</button>
+  </div>
+
+  <!-- PAGE ORIGINE -->
+  <div class="section active" id="s-origine">
+    <div class="page ruled">
+      <div class="torn-top"></div>
+      <!-- Stains -->
+      <div class="stain stain-coffee" style="top:40px; right:60px; transform:rotate(15deg);"></div>
+      <div class="stain stain-water" style="bottom:80px; left:30px;"></div>
+      <!-- Tape -->
+      <div class="tape tape-h" style="width:80px; top:10px; right:140px; transform:rotate(-3deg);"></div>
+
+      <div class="page-header">
+        <span class="page-num">Page 001 / Dossier Nexagen</span>
+        <span class="page-date">15 mars 2026</span>
+      </div>
+
+      <div class="chapter-title">Le Laboratoire<br>Nexagen</div>
+      <div class="chapter-subtitle">// Incident de Niveau 4 — Classifié //</div>
+
+      <p class="prose-text">
+        Tout a commencé dans les sous-sols d'un complexe que la plupart des habitants de Los Santos ne connaissaient même pas : le <strong>laboratoire Nexagen BioTech</strong>, implanté dans les collines isolées au nord de Paleto Bay. Officiellement, ses équipes travaillaient sur des traitements contre les maladies neurodégénératives. Des recherches nobles, bien financées, bien cachées.
+      </p>
+
+      <p class="prose-text">
+        En réalité, depuis 2022, une division secrète de niveau 4 menait des expériences sur un pathogène d'origine inconnue — récupéré lors d'une opération militaire non divulguée en Sibérie orientale. Nom de code interne : <strong>« VERMIS-9 »</strong>. Ses propriétés neurologiques avaient fasciné les chercheurs. Ils n'avaient pas encore compris pourquoi elles les fascinaient autant. Ce genre de fascination mène toujours quelque part de sombre.
+      </p>
+
+      <div class="handnote" style="margin-left:20px;">
+        → Qui a autorisé les expériences ?<br>
+        → Nexagen avait des contacts gouvernementaux ?
+      </div>
+
+      <p class="prose-text">
+        Le <strong>15 mars 2026 à 03h47</strong>, une défaillance critique du système de confinement secondaire du niveau B-3 s'est produite. Les archives récupérées depuis — partiellement brûlées — indiquent qu'un chercheur, le <strong>Dr. Elliot Harrow</strong>, avait désactivé manuellement plusieurs protocoles de sécurité pour accélérer une phase d'extraction. Pression hiérarchique, corruption, simple négligence criminelle. Les raisons exactes restent inconnues.
+      </p>
+
+      <div class="note">
+        <div class="note-title">Fragment récupéré — Journal du Dr. Harrow</div>
+        <div class="note-body">
+          "Ils veulent les résultats pour demain matin. J'ai désactivé les protocoles C et D, juste le temps d'une extraction propre. Vingt minutes maximum. Le système de filtration tient. Il a toujours tenu."<br><br>
+          <em style="font-size:13px; color:#5a3a20;">— Entrée du 14 mars 2026, 23h51. Dernière entrée.</em>
+        </div>
+      </div>
+
+      <p class="prose-text">
+        En quatre minutes, le pathogène s'était répandu dans la ventilation du bâtiment entier. Le Dr. Harrow fut le premier infecté. À <strong>04h12</strong>, les alarmes de quarantaine automatiques se déclenchèrent. Trop tard : deux membres du personnel de sécurité avaient déjà quitté le site dans la nuit. Nexagen BioTech déclencha un protocole de silence interne, tentant d'étouffer l'incident. Ce choix fut la deuxième catastrophe après la première.
+      </p>
+
+      <div class="page-sep">— fin du dossier 001 —</div>
+      <div class="stamp" style="font-size:16px; float:right; clear:both;">NE PAS DIVULGUER</div>
+
+      <div style="clear:both;"></div>
+      <div class="torn-bottom"></div>
+    </div>
+  </div>
+
+  <!-- PAGE PROPAGATION -->
+  <div class="section" id="s-propagation">
+    <div class="page ruled">
+      <div class="torn-top"></div>
+      <div class="stain stain-blood" style="top:120px; right:80px;"></div>
+      <div class="stain stain-coffee" style="bottom:100px; right:50px; transform:rotate(-20deg); width:80px; height:70px;"></div>
+      <div class="tape tape-h" style="width:100px; top:8px; left:200px; transform:rotate(2deg);"></div>
+
+      <div class="page-header">
+        <span class="page-num">Page 002 / Chronologie de l'Effondrement</span>
+        <span class="page-date">J+0 → Aujourd'hui</span>
+      </div>
+
+      <div class="chapter-title">La Propagation</div>
+      <div class="chapter-subtitle">// Reconstitution des événements — ZETA-9 Archives //</div>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-date">J+0<br>15 mars</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Contamination initiale — Nexagen</div>
+            <div class="tl-text">Fuite de Vermis-9 au niveau B-3. Premiers infectés : Dr. Harrow et 3 membres du personnel. Deux agents de sécurité quittent le site sans savoir qu'ils portent le virus.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">J+1<br>16 mars</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Premiers cas à Sandy Shores</div>
+            <div class="tl-text">L'agent Reyes rentre chez lui. Sa famille est exposée dans la nuit. Ses voisins signalent des comportements étranges. Il est retrouvé mort au matin — ou ce qui ressemble à mort.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">J+2<br>17 mars</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Strawberry — propagation urbaine</div>
+            <div class="tl-text">L'agent Collins s'effondre dans un supermarché. Douze personnes directement exposées. Les services d'urgence interviennent sans protection adéquate. La chaîne de contamination explose.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">J+3<br>18 mars</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Los Santos — pandémie déclarée</div>
+            <div class="tl-text">Les hôpitaux signalent un afflux massif. Les médias parlent d'un "virus grippal agressif". Les autorités nient tout danger. C'est leur dernière erreur collective.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">J+5<br>20 mars</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Première mutation documentée</div>
+            <div class="tl-text">Un médecin urgentiste de Mirror Park décrit pour la première fois la phase terminale : réanimation partielle d'un sujet cliniquement mort, comportement agressif total, perte irréversible des fonctions cognitives.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">J+7<br>22 mars</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Effondrement des institutions</div>
+            <div class="tl-text">État d'urgence déclaré trop tard. L'armée arrive mais ne contrôle rien. Des quartiers entiers de Los Santos tombent en moins de 48 heures. Le LSPD se dissout dans le chaos.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">J+10<br>25 mars</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Création de la Safezone — Vinewood Hills</div>
+            <div class="tl-text">Un groupe de militaires et civils armés s'organisent dans les hauteurs. ZETA-9 est constituée dans les heures qui suivent. Le dernier refuge est né.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date" style="color:#2e7d32; font-weight:700;">Aujourd'hui</div>
+          <div class="tl-dot" style="background:#2e7d32;"></div>
+          <div class="tl-content">
+            <div class="tl-title">Année Zéro — Tu es encore en vie</div>
+            <div class="tl-text">La ville est perdue. La Safezone est le dernier point organisé. Chaque jour est une lutte. Chaque choix compte.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="torn-bottom"></div>
+    </div>
+  </div>
+
+  <!-- PAGE VIRUS -->
+  <div class="section" id="s-virus">
+    <div class="page ruled">
+      <div class="torn-top"></div>
+      <div class="stain stain-blood" style="top:200px; left:50px; width:90px; height:70px; transform:rotate(30deg); opacity:0.8;"></div>
+      <div class="stain stain-water" style="top:50px; right:20px; width:150px; height:120px;"></div>
+
+      <div class="page-header">
+        <span class="page-num">Page 003 / Pathologie — Vermis-9</span>
+        <span class="page-date">Rapport Dr. Vora</span>
+      </div>
+
+      <div class="chapter-title">VERMIS-9</div>
+      <div class="chapter-subtitle">// Agent pathogène hybride — classification DANGER EXTRÊME //</div>
+
+      <p class="prose-text">
+        Vermis-9 est unlike tout ce que la médecine moderne avait documenté. Agent hybride, mi-viral mi-parasitaire, capable de survivre plusieurs heures hors d'un hôte sur des surfaces inertes. Sa transmission principale s'effectue par contact direct avec les fluides corporels d'un infecté. La <strong>morsure</strong> est le vecteur le plus redouté — et le plus courant.
+      </p>
+
+      <div class="page-sep">— stades d'infection —</div>
+
+      <div class="note" style="transform:rotate(-1deg); margin-bottom:20px;">
+        <div class="note-title" style="color:#8b1a1a;">Stade 1 — 0 à 6 heures · Incubation</div>
+        <div class="note-body">
+          Fièvre brutale (40–41°C), maux de tête intenses, désorientation progressive. Le sujet peut encore communiquer mais perd sa cohérence. Une morsure traitée dans cette fenêtre avec les bons produits pharmaceutiques peut <em>retarder</em> l'évolution. Retarder seulement.
+        </div>
+      </div>
+
+      <div class="note" style="transform:rotate(0.5deg); margin-bottom:20px; background:#f8e0c0;">
+        <div class="note-title" style="color:#7a3e1a;">Stade 2 — 6 à 18 heures · Phase neurologique</div>
+        <div class="note-body">
+          Le virus attaque le système nerveux central. Comportement agressif, hallucinations violentes. La douleur disparaît presque totalement — ce qui en fait une menace physique redoutable. À ce stade, le retour en arrière est pratiquement impossible.
+        </div>
+      </div>
+
+      <div class="note" style="transform:rotate(-0.8deg); background:#f0d0c0;">
+        <div class="note-title" style="color:#5c0a0a;">Stade 3 — 18 à 36 heures · Mort & Réanimation</div>
+        <div class="note-body">
+          L'hôte décède. Mais Vermis-9 survit et continue de stimuler les systèmes moteurs primitifs du cerveau. Le sujet "revient". Ce n'est plus un être humain. Aucune cognition, aucune douleur, aucune pitié. Une seule impulsion : contaminer.
+        </div>
+      </div>
+
+      <div class="excerpt">
+        <div class="excerpt-text">
+          "Une morsure peut vous tuer. Mais si elle ne vous tue pas assez vite, vous deviendrez la menace suivante. C'est la vraie horreur de ce virus — il ne gaspille rien."
+        </div>
+        <span class="excerpt-source">— Dr. Aisha Vora, médecin de la Safezone ZETA-9</span>
+      </div>
+
+      <div class="handnote" style="color:#1a2d5a; transform:rotate(1deg);">
+        Les "Altérés" = mutations avancées, plus rapides,<br>
+        plus résistants. Observés uniquement en zones noires.
+      </div>
+
+      <div class="torn-bottom"></div>
+    </div>
+  </div>
+
+  <!-- PAGE ZETA-9 -->
+  <div class="section" id="s-zeta9">
+    <div class="page ruled">
+      <div class="torn-top"></div>
+      <div class="stain stain-coffee" style="top:60px; right:40px;"></div>
+      <div class="tape tape-h" style="width:120px; bottom:60px; left:100px; transform:rotate(-1.5deg);"></div>
+
+      <div class="page-header">
+        <span class="page-num">Page 004 / Force Spéciale</span>
+        <span class="page-date">Fondée J+10</span>
+      </div>
+
+      <div class="chapter-title">ZETA-9</div>
+      <div class="chapter-subtitle">// Gardiens de la Safezone — Vinewood Hills //</div>
+
+      <p class="prose-text">
+        Dans les heures chaotiques qui ont suivi l'effondrement de Los Santos, un groupe de survivants a compris qu'aucune aide extérieure ne viendrait. Des soldats revenus de missions à l'étranger. Des policiers du LSPD ayant refusé d'abandonner leur poste. Des chasseurs, des civils armés, des gens qui avaient survécu aux premières heures par instinct ou par chance. Ensemble, ils ont choisi les <strong>Vinewood Hills</strong> — hauteur stratégique, accès limité, visibilité maximale.
+      </p>
+
+      <div class="page-sep">— commandement —</div>
+
+      <div class="note" style="transform:rotate(-0.5deg); margin-bottom:16px;">
+        <div class="note-title">Commandant Marcus Ortega — "La Forteresse"</div>
+        <div class="note-body">Ancien colonel des forces spéciales. Architecte militaire de la Safezone. Homme de peu de mots — il parle par décisions. Sa règle absolue : <strong>ZETA-9 ne lance pas d'expéditions offensives.</strong> Protéger les vivants est sa seule mission. Si vous voulez lui parler, il est dans la base. Venez préparé.</div>
+      </div>
+
+      <div class="note" style="transform:rotate(1deg); margin-bottom:16px; background:#eee8d0;">
+        <div class="note-title">Dr. Aisha Vora — "La Conscience"</div>
+        <div class="note-body">Ancienne infectiologue à l'université de San Andreas. A perdu toute sa famille lors de la première semaine. Elle est la mémoire médicale de la Safezone et la seule personne qui comprend partiellement Vermis-9. Elle consulte dans l'infirmerie — venez lui parler si vous cherchez des réponses sur le virus.</div>
+      </div>
+
+      <div class="note" style="transform:rotate(-1.2deg); background:#f0e8c8;">
+        <div class="note-title">Sergeant Elena Dumont — "Le Pont"</div>
+        <div class="note-body">Ancienne officier de paix reconvertie en diplomate de terrain. C'est elle qui accueille les nouveaux arrivants, distribue les ressources et arbitre les conflits internes. Elle évaluera si vous êtes un atout ou un risque. Ne la décevez pas.</div>
+      </div>
+
+      <div class="excerpt">
+        <div class="excerpt-text">
+          ZETA-9 ne sort pas des murs. Chaque soldat perdu à l'extérieur est un soldat en moins pour défendre les vivants à l'intérieur. En revanche, les membres de ZETA-9 sont accessibles dans la base. Parlez-leur. Posez des questions. Ramenez des informations de l'extérieur.
+        </div>
+        <span class="excerpt-source">— Règlement intérieur ZETA-9, paragraphe 1</span>
+      </div>
+
+      <div class="torn-bottom"></div>
+    </div>
+  </div>
+
+  <!-- PAGE ZONES -->
+  <div class="section" id="s-zones">
+    <div class="page ruled">
+      <div class="torn-top"></div>
+      <div class="stain stain-blood" style="bottom:140px; right:60px; width:50px; height:40px; opacity:0.6;"></div>
+      <div class="stain stain-coffee" style="top:80px; left:60px; width:70px; height:60px;"></div>
+
+      <div class="page-header">
+        <span class="page-num">Page 005 / Cartographie des Dangers</span>
+        <span class="page-date">Mise à jour continue</span>
+      </div>
+
+      <div class="chapter-title">Les Zones</div>
+      <div class="chapter-subtitle">// Classification établie par ZETA-9 — sujette à révision //</div>
+
+      <p class="prose-text">
+        La carte de Los Santos a été découpée en zones de dangerosité selon les observations accumulées depuis le début de la crise. Cette classification évolue — chaque survivant qui rentre avec des informations contribue à l'améliorer. En dehors de la Safezone, chaque pas est une décision.
+      </p>
+
+      <div class="zones-list">
+        <div class="zone-row green">
+          <div class="zone-badge green">Zone Verte</div>
+          <div class="zone-desc-text"><strong>Safezone — Vinewood Hills.</strong> Périmètre défendu par ZETA-9. Présence d'infectés quasi-nulle. Accès contrôlé et surveillé 24h/24. C'est le seul endroit où vous pouvez baisser la garde — un peu.</div>
+        </div>
+        <div class="zone-row orange">
+          <div class="zone-badge orange">Zone Standard</div>
+          <div class="zone-desc-text"><strong>Reste de la carte hors classifications spéciales.</strong> Présence d'infectés modérée mais certaine. Déplacements risqués seul. Chacun s'y aventure à ses propres risques et périls. Ne sous-estimez jamais une zone "standard".</div>
+        </div>
+        <div class="zone-row red">
+          <div class="zone-badge red">Zone Rouge</div>
+          <div class="zone-desc-text"><strong>Concentration élevée d'infectés confirmée.</strong> Anciennes zones commerciales, hospitalières, zones de rassemblement. Aller seul est considéré comme suicidaire. Un groupe armé et préparé peut y survivre — temporairement.</div>
+        </div>
+        <div class="zone-row black">
+          <div class="zone-badge black">Zone Noire</div>
+          <div class="zone-desc-text"><strong>Effondrement total. Présence confirmée d'Altérés.</strong> Des phénomènes anormaux y ont été rapportés. Des meutes organisées. Les équipes de reconnaissance envoyées par ZETA-9 ne sont pas revenues. N'y allez pas seul. N'y allez peut-être pas du tout.</div>
+        </div>
+      </div>
+
+      <div class="handnote" style="margin-top:24px;">
+        Centre hospit. La Mesa → zone rouge confirmée<br>
+        Strawberry → zone rouge<br>
+        Entrepôts portuaires → zone noire ???
+      </div>
+
+      <div class="page-sep">— note personnelle —</div>
+
+      <div class="excerpt">
+        <div class="excerpt-text">
+          Cette ville était une jungle avant. Maintenant c'est juste une jungle plus honnête.
+        </div>
+        <span class="excerpt-source">— graffiti sur un mur de la Safezone, auteur inconnu</span>
+      </div>
+
+      <div class="torn-bottom"></div>
+    </div>
+  </div>
+
+  <!-- PAGE SURVIE -->
+  <div class="section" id="s-survie">
+    <div class="page ruled">
+      <div class="torn-top"></div>
+      <div class="stain stain-water" style="top:100px; right:10px;"></div>
+      <div class="tape tape-h" style="width:90px; top:12px; right:200px; transform:rotate(4deg);"></div>
+
+      <div class="page-header">
+        <span class="page-num">Page 006 / Règles de survie</span>
+        <span class="page-date">Écrit par les vivants</span>
+      </div>
+
+      <div class="chapter-title">Survivre</div>
+      <div class="chapter-subtitle">// Ce que les morts avaient ignoré //</div>
+
+      <p class="prose-text">
+        Il n'existe pas de guide universel pour survivre à l'Effondrement. Mais les semaines écoulées ont permis aux rescapés de dégager quelques vérités fondamentales — des règles non écrites que les vivants respectent.
+      </p>
+
+      <div class="note" style="transform:rotate(-0.8deg); margin-bottom:14px;">
+        <div class="note-title">① Ne jamais sortir seul en zone dangereuse</div>
+        <div class="note-body">Un survivant seul est une cible. Un groupe de deux est un risque calculé. Trois ou plus commence à ressembler à une chance réelle. Le bruit attire les infectés — mais la solitude tue plus vite que n'importe quelle morsure.</div>
+      </div>
+
+      <div class="note" style="transform:rotate(0.6deg); margin-bottom:14px; background:#f0e8d0;">
+        <div class="note-title">② Toute morsure doit être déclarée</div>
+        <div class="note-body">Dans la Safezone, dissimuler une morsure est la trahison ultime. ZETA-9 applique un protocole strict : isolement immédiat et surveillance. Ce n'est pas de la cruauté — c'est de la survie collective.</div>
+      </div>
+
+      <div class="note" style="transform:rotate(-1.2deg); margin-bottom:14px; background:#eee0c8;">
+        <div class="note-title">③ Les ressources se partagent, les armes se méritent</div>
+        <div class="note-body">Nourriture, eau, médicaments passent par l'inventaire central. Les armes ne sont pas distribuées librement — elles sont accordées selon la confiance acquise et les services rendus à la communauté.</div>
+      </div>
+
+      <div class="note" style="transform:rotate(0.3deg); background:#f5e8c0;">
+        <div class="note-title">④ Chaque survivant a une histoire — écoutez-la</div>
+        <div class="note-body">Un mécanicien peut réparer un véhicule blindé. Un ex-dealer connaît les tunnels sous Strawberry. Un vieux chasseur sait où se planquent les infectés la nuit. Votre passé est votre valeur. Celui des autres aussi.</div>
+      </div>
+
+      <div class="page-sep"></div>
+
+      <p class="prose-text">
+        Los Santos n'est plus la ville que vous connaissiez. Mais elle n'est pas morte non plus. Des factions émergent — certaines bienveillantes, d'autres prédatrices. Des routes de commerce informelles se créent dans l'ombre. <strong>À vous de choisir votre camp, ou de tracer votre propre chemin.</strong>
+      </p>
+
+      <div class="torn-bottom"></div>
+    </div>
+  </div>
+
+  <!-- PAGE REJOINDRE -->
+  <div class="section" id="s-rejoindre">
+    <div class="page ruled">
+      <div class="torn-top"></div>
+      <div class="stain stain-blood" style="top:60px; right:80px; width:80px; height:60px; transform:rotate(-10deg);"></div>
+      <div class="stain stain-coffee" style="bottom:60px; left:40px; width:100px; height:80px;"></div>
+      <div class="tape tape-h" style="width:110px; top:10px; left:150px; transform:rotate(-2deg);"></div>
+
+      <div class="page-header">
+        <span class="page-num">Page 007 / Appel aux survivants</span>
+        <span class="page-date">Pour toi qui lis ceci</span>
+      </div>
+
+      <div class="chapter-title">Vous êtes encore<br>en vie.</div>
+      <div class="chapter-subtitle">// Pour combien de temps ? //</div>
+
+      <p class="prose-text">
+        Los Santos est tombée. La civilisation telle que vous la connaissiez a pris fin en sept jours. Le gouvernement ne viendra pas. L'armée ne viendra pas. Il ne reste que vous, les autres survivants, et les décisions que vous allez prendre dans les prochaines heures.
+      </p>
+
+      <div class="excerpt">
+        <div class="excerpt-text">
+          Sur notre serveur, chaque personnage est une histoire. Qui étiez-vous avant l'Effondrement ? Comment avez-vous survécu aux premières semaines ? Avez-vous perdu quelqu'un ? Ces questions ont des réponses — et ces réponses forgent votre roleplay.
+        </div>
+      </div>
+
+      <p class="prose-text">
+        Vous pouvez incarner <strong>un civil ordinaire</strong> cherchant à retrouver sa famille, <strong>un ex-militaire</strong> voulant rejoindre ZETA-9, <strong>un médecin</strong> tentant de percer le secret de Vermis-9, <strong>un pillard</strong> qui a choisi la survie à tout prix, ou <strong>un bâtisseur</strong> qui croit encore qu'on peut reconstruire quelque chose dans les décombres.
+      </p>
+
+      <div class="note" style="transform:rotate(-1deg);">
+        <div class="note-title">Ce qui vous attend</div>
+        <div class="note-body">
+          Les événements du serveur s'inscrivent dans la chronologie de l'Effondrement. Des découvertes sur Vermis-9. Des factions qui émergent. Des expéditions vers les zones noires. Des tensions internes à la Safezone. Chaque joueur peut influencer l'histoire. Chaque décision laisse une trace.
+        </div>
+      </div>
+
+      <div class="handnote" style="font-size:24px; text-align:center; display:block; margin: 30px 0; transform:rotate(-2deg);">
+        L'histoire n'est pas écrite.<br>Vous êtes l'encre.
+      </div>
+
+      <div style="text-align:center; margin-top:20px;">
+        <span class="stamp stamp-approved" style="font-size:18px;">Bienvenue dans l'Année Zéro</span>
+      </div>
+
+      <div class="torn-bottom"></div>
+    </div>
+  </div>
+
+  <div class="footer-note">DeadCity RP · Los Santos 2026 · Dossier classifié ZETA-9 · Reproduction interdite</div>
+</div>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('s-' + id).classList.add('active');
+    event.currentTarget.classList.add('active');
+    document.getElementById('tabs').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+</script>
+</body>
+</html>
